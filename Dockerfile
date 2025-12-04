@@ -6,4 +6,4 @@ WORKDIR /app
 COPY . .
 
 # Compile file java (vì mày chỉ có 1 file .java)
-RUN javac SmartLevelSpammer.java
+RUN javac SecureDiscordBot.java
