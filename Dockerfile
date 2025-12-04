@@ -1,65 +1,25 @@
-FROM eclipse-temurin:17-jdk-alpine AS build
+# ========== DOCKERFILE ==========
+# Dùng OpenJDK 21 slim (nhẹ nhất, đủ dùng)
+FROM eclipse-temurin:21-jdk-alpine
 
+# Tạo thư mục làm việc
 WORKDIR /app
 
-# Copy Maven files
-COPY pom.xml .
+# Copy toàn bộ file (hoặc chỉ file jar nếu mày đã build sẵn)
+# Cách 1: Copy source + build luôn trong Docker (dành cho mày chưa có jar)
+COPY . .
 
-# Copy source code
-COPY src ./src
+# Nếu mày dùng Maven/Gradle thì uncomment dòng dưới
+# RUN ./mvnw clean package -DskipTests   # Maven
+# RUN ./gradlew build                    # Gradle
 
-# Build the application
-RUN apk add --no-cache maven && \
-    mvn clean package -DskipTests
+# Nếu mày chỉ có file .java đơn lẻ thì compile luôn:
+RUN javac SmartLevelSpammer.java
 
-# Runtime stage
-FROM eclipse-temurin:17-jre-alpine
+# Chạy file .class (không cần jar cũng được)
+ENTRYPOINT ["java", "SmartLevelSpammer"]
 
-WORKDIR /app
-
-# Copy JAR from build stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
-```
-
-### 3. **.gitignore**
-```
-# Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-
-# Java
-*.class
-*.log
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# IDE
-.idea/
-*.iml
-.vscode/
-.eclipse/
-.settings/
-.classpath
-.project
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Environment
-.env
-*.env
+# Nếu mày muốn build thành jar thì dùng cái này thay 2 dòng trên:
+# RUN jar cfe app.jar SmartLevelSpammer *.class
+# ENTRYPOINT ["java", "-jar", "app.jar"]
+# =================================
