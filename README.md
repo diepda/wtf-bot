@@ -28,4 +28,4 @@ java -jar target/discord-self-bot-1.0.0.jar
 Mở file `src/main/java/SecureDiscordBot.java` để thay đổi:
 - `CHANNEL_ID`: ID channel muốn gửi
 - `MIN_MINUTES`, `MAX_MINUTES`: Khoảng thời gian random
-- `MESSAGES`: Danh sách tin nhắn
+- `MESSAGES`: Danh sách tin nhắn# wtf-bot
